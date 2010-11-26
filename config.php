@@ -1,0 +1,20 @@
+<?php
+
+//Connection data. Start the bot with a network key commandline argument to connect.
+$config = array(
+	'localhost' => array(
+		'server' => 'localhost',
+		'port'   => 6667,
+		'channel' => '#exbot',
+		'name'   => 'exbot',
+		'nick'   => 'exbot',
+		'pass'   => '',
+		'domain' => 'sikkerhansen.wordpress.com',
+		'command_signal' => '!',
+		'trace' => TRUE,
+		'trace_log' => TRUE,
+		'auth_password' => 'foobar',
+		'session_expire' => 60*60*20,
+		'notice_response' => FALSE,
+	),
+);

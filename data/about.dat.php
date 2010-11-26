@@ -1,0 +1,5 @@
+<?php
+
+$MODDATA = array();
+
+//EOF

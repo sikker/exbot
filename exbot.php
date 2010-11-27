@@ -325,6 +325,54 @@ class IRCBot {
 		if($this->trace_log) file_put_contents('trace/' . $this->server . '.log', $message);
 	}
 
+	/**
+	 * Returns data related to the module in question. If $new_value is set, the data will be replaced.
+	 *
+	 * @param	string	the name of the module. The file will be data/$module.dat.php
+	 * @param	mixed	the data to be stored. Can be a string, array, object, or anything else
+	 * @return	mixed	the data the module has stored.
+	 */
+	private function module_data($module, $new_value = NULL)
+	{
+		include('data/' . $module . '.dat.php');
+		if($new_value!==NULL)
+		{
+			file_put_contents('data/' . $module . '.dat.php',
+'<?php
+
+$module_data = unserialize(\''.serialize($new_value).'\');
+$service_data = unserialize(\''.serialize($service_data).'\');
+
+// EOF');
+			return $new_value;
+		}
+		return $module_data;
+	}
+
+	/**
+	 * Returns the data related to the service in question. If $new_value is set, the data will be replaced.
+	 * 
+	 * @param	string	the name of the service. The file will be data/$service.dat.php
+	 * @param	mixed	the data to be stored. Can be a string, array, object or anything else
+	 * @return	mixed	the data the service has stored
+	 */
+	private function service_data($service, $new_value = NULL)
+	{
+		include('data/' . $service . '.dat.php');
+		if($new_value!==NULL)
+		{
+			file_put_contents('data/' . $service . '.dat.php',
+'<?php
+
+$module_data = unserialize(\''.serialize($module_data).'\');
+$service_data = unserialize(\''.serialize($new_value).'\');
+
+// EOF');
+			return $new_value;
+		}
+		return $service_data;
+	}
+
 }
 
 // Start the bot

@@ -2,8 +2,7 @@
 
 if(isset($this->ex[4]))
 {
-	include('data/about.dat.php');
-
+	$data = $this->module_data('about');
 	if(isset($this->ex[5]))
 	{
 		// Combine everything after the fourth segment into a string
@@ -13,14 +12,13 @@ if(isset($this->ex[4]))
 			unset($combined[$i]);
 		}
 		
-		$MODDATA[ $this->ex[4] ] = implode(' ', $combined);
-		file_put_contents('data/about.dat.php', '<?php'."\n\n\$MODDATA = unserialize('".serialize($MODDATA)."');\n\n//EOF");
+		$data[ $this->ex[4] ] = implode(' ', $combined);
+		$this->module_data('about', $data);
 	}
 	else
 	{
-		$this->send_data('PRIVMSG', (preg_match('/^#/', $channel) ? $channel : $messenger) . ' :' . $this->ex[4] . ' is ' . $MODDATA[ $this->ex[4] ]);
+		$this->send_data('PRIVMSG', (preg_match('/^#/', $channel) ? $channel : $messenger) . ' :' . $this->ex[4] . ' is ' . $data[ $this->ex[4] ]);
 	}
-	
 }
 
 // EOF

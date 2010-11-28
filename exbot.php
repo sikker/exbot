@@ -112,6 +112,7 @@ class IRCBot {
 		$this->session_expire = $config['session_expire'];
 		$this->trace = $config['trace'];
 		$this->trace_log = $config['trace_log'];
+		$this->notice_response = $config['notice_response'];
 		$this->command_signal = $config['command_signal'];
 
 		// Load services and modules for the first time

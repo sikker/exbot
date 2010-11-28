@@ -15,6 +15,6 @@ $config = array(
 		'trace_log' => TRUE,
 		'auth_password' => 'foobar',
 		'session_expire' => 60*60*20,
-		'notice_response' => FALSE,
+		'notice_response' => TRUE,
 	),
 );

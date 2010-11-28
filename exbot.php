@@ -97,7 +97,8 @@ class IRCBot {
 
 	/**
 	 * Construct item, opens the server connection, logs the bot in
-	 * @param array
+	 *
+	 * @param	array
 	 */
 	public function __construct($config)
 	{
@@ -124,7 +125,11 @@ class IRCBot {
 
 	/**
 	 * Logs the bot in on the server
-	 * @param array
+	 *
+	 * @param	string
+	 * @param	string
+	 * @param	string
+	 * @param	string
  	 */
 	private function login($nick, $name, $domain, $password)
 	{

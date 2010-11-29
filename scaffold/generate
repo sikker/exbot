@@ -1,0 +1,64 @@
+<?php
+
+// Generate module/service/data scaffold
+
+if( ! isset($argv[1])) die("No name paramter, arborting".PHP_EOL);
+
+$name = $argv[1];
+$module = FALSE;
+$data = FALSE;
+$service = FALSE;
+$something = FALSE;
+
+for($i=2;$i<count($argv);$i++)
+{
+	$arg = strtolower($argv[$i]);
+	if($arg === 'module' || $arg === 'mod')
+	{
+		$module = TRUE;
+		if( ! $something) $something = TRUE;
+	}
+	elseif($arg === 'service' || $arg === 'ser')
+	{
+		$service = TRUE;
+		if( ! $something) $something = TRUE;
+	}
+	elseif($arg === 'data' || $arg === 'dat')
+	{
+		$data = TRUE;
+		if( ! $something) $something = TRUE;
+	}
+}
+
+if($module)
+{
+	file_put_contents('modules/' . $name . '.mod.php',
+'<?php
+
+// EOF');
+	echo "Module created in modules/$name.mod.php".PHP_EOL;
+}
+
+if($service)
+{
+	file_put_contents('services/' . $name . '.ser.php',
+'<?php
+
+// EOF');
+	echo "Service created in services/$name.ser.php".PHP_EOL;
+}
+
+if($data)
+{
+	file_put_contents('data/' . $name . '.dat.php',
+'<?php
+
+$module_data = array();
+$service_data = array();
+
+// EOF');
+
+	echo "Data file created in data/$name.dat.php".PHP_EOL;
+}
+
+if( ! $something) echo "Nothing was set, try to add some parameters".PHP_EOL;

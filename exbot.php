@@ -36,6 +36,8 @@
  *
  */
 
+define('EXBOT_DIR', 'EDITTHIS');
+
 set_time_limit(0);
 ini_set('display_errors', 'on');
 
@@ -144,11 +146,11 @@ class ExBot extends IRCBot {
 	 */
 	private function reload_modules()
 	{
-		if($modules = glob('modules/*.mod.php'))
+		if($modules = glob(EXBOT_DIR . 'modules/*.mod.php'))
 		{
 			foreach($modules as $module)
 			{
-				$this->modules[basename($module, '.mod.php')] = preg_replace('/^\<\?php/', '', file_get_contents($module));
+				$this->modules[basename($module, EXBOT_DIR . '.mod.php')] = preg_replace('/^\<\?php/', '', file_get_contents($module));
 			}
 		}
 	}
@@ -159,11 +161,11 @@ class ExBot extends IRCBot {
 	 */
 	private function reload_services()
 	{
-		if($services = glob('services/*.ser.php'))
+		if($services = glob(EXBOT_DIR . 'services/*.ser.php'))
 		{
 			foreach($services as $service)
 			{
-				$this->services[basename($service, '.ser.php')] = preg_replace('/^\<\?php/', '', file_get_contents($service));
+				$this->services[basename($service, EXBOT_DIR . '.ser.php')] = preg_replace('/^\<\?php/', '', file_get_contents($service));
 			}
 		}
 	}
@@ -177,13 +179,13 @@ class ExBot extends IRCBot {
 	 */
 	protected function module_data($module, $new_value = NULL)
 	{
-		include('data/' . $module . '.dat.php');
+		include('data/' . $module . EXBOT_DIR . '.dat.php');
 		if($new_value!==NULL)
 		{
 			$new_value = $this->base64_encode_recursive($new_value);
 			$service_data = $this->base64_encode_recursive($service_data);
 
-			file_put_contents('data/' . $module . '.dat.php',
+			file_put_contents(EXBOT_DIR . 'data/' . $module . '.dat.php',
 '<?php
 
 $module_data = unserialize(\''.serialize($new_value).'\');
@@ -238,13 +240,13 @@ $service_data = unserialize(\''.serialize($service_data).'\');
 	 */
 	protected function service_data($service, $new_value = NULL)
 	{
-		include('data/' . $module . '.dat.php');
+		include(EXBOT_DIR . 'data/' . $module . '.dat.php');
 		if($new_value!==NULL)
 		{
 			$new_value = $this->base64_encode_recursive($new_value);
 			$module_data = $this->base64_encode_recursive($module_data);
 
-			file_put_contents('data/' . $module . '.dat.php',
+			file_put_contents(EXBOT_DIR . 'data/' . $module . '.dat.php',
 '<?php
 
 $module_data = unserialize(\''.serialize($service_data).'\');
@@ -260,7 +262,7 @@ $service_data = unserialize(\''.serialize($new_value).'\');
 
 // Start the bot
 if( ! isset($argv[1]) && ! isset($_GET['network'])) die('No network parameter provided, aborting' . PHP_EOL);
-require_once('config.php');
+require_once(EXBOT_DIR . 'config.php');
 if( ! isset($config[ (isset($argv[1]) ? $argv[1] : $_GET['network']) ]) ) die('No such network in config, aborting' . PHP_EOL);
 
 $bot = new ExBot($config[ ( isset($argv[1]) ? $argv[1] : $_GET['network']) ]);

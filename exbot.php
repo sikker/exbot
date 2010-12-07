@@ -150,7 +150,7 @@ class ExBot extends IRCBot {
 		{
 			foreach($modules as $module)
 			{
-				$this->modules[basename($module, EXBOT_DIR . '.mod.php')] = preg_replace('/^\<\?php/', '', file_get_contents($module));
+				$this->modules[basename($module, '.mod.php')] = preg_replace('/^\<\?php/', '', file_get_contents($module));
 			}
 		}
 	}
@@ -165,7 +165,7 @@ class ExBot extends IRCBot {
 		{
 			foreach($services as $service)
 			{
-				$this->services[basename($service, EXBOT_DIR . '.ser.php')] = preg_replace('/^\<\?php/', '', file_get_contents($service));
+				$this->services[basename($service, '.ser.php')] = preg_replace('/^\<\?php/', '', file_get_contents($service));
 			}
 		}
 	}
@@ -179,7 +179,7 @@ class ExBot extends IRCBot {
 	 */
 	protected function module_data($module, $new_value = NULL)
 	{
-		include('data/' . $module . EXBOT_DIR . '.dat.php');
+		include(EXBOT_DIR . 'data/' . $module . '.dat.php');
 		if($new_value!==NULL)
 		{
 			$new_value = $this->base64_encode_recursive($new_value);

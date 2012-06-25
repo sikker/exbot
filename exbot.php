@@ -36,7 +36,7 @@
  *
  */
 
-define('EXBOT_DIR', 'EDITTHIS');
+define('EXBOT_DIR', __DIR__ . '/');
 
 set_time_limit(0);
 ini_set('display_errors', 'on');

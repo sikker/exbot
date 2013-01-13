@@ -1,7 +1,7 @@
 <?php
 
 if( ! class_exists('OnyxRoll')) {
-	require_once(EXBOT_DIR . 'lib/onyxroll.class.php');
+	require_once(EXBOT_DIR . 'lib/onyxroll/onyxroll.class.php');
 }
 
 $ex = $this->ex();

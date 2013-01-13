@@ -1,6 +1,6 @@
 <?php
 
-if($this->ex[1]==='QUIT')
+if($this->ex(1)==='QUIT')
 {
 	if(isset($this->authenticated_users[$messenger]))
 	{

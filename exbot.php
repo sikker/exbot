@@ -179,7 +179,7 @@ if( ! isset($config[ (isset($argv[1]) ? $argv[1] : $_GET['network']) ]) ) die('N
 
 $bot = new ExBot($config[ ( isset($argv[1]) ? $argv[1] : $_GET['network']) ]);
 
-while(true) {
+while($bot->running()) {
 	$bot->main();
 }
 

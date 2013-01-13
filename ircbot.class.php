@@ -86,6 +86,9 @@ class IRCBot {
 	// and can manipulate admin-only aspects of it.
 	protected $authenticatedUsers = array();
 
+	// Whether or not the bot has been asked to quit by a superuser.
+	protected $quit = false;
+
 	/**
 	 * Construct item, opens the server connection, logs the bot in
 	 *
@@ -163,10 +166,30 @@ class IRCBot {
 			foreach($channel as $chan) {
 				$this->partChannel($chan);
 			}
+		} elseif( is_string($channel) || isset($this->channels[$channel])) {
+			$this->sendData('PART', $channel);
+			unset($this->channels[$channel]);
 		}
-		if( ! isset($this->channels[$channel])) return;
-		$this->sendData('PART', $channel);
-		unset($this->channels[$channel]);
+	}
+
+	/**
+	 * Returns whether or not the bot should quit after this tick. Accepts an optional 
+	 * boolean parameter which toggles this state.
+	 */
+	protected function quit($toggle = null) {
+		if($toggle !== false) {
+			$this->quit = (bool) $toggle;
+		}
+
+		return $this->quit;
+	}
+
+	/**
+	 * Public (inversed) equivalent for quit(), but does not allow toggling. Can be used by loops
+	 * to check whether to terminate the script.
+	 */
+	public function running() {
+		return ! $this->quit;
 	}
 
 	/**

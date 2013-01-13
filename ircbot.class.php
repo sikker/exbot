@@ -102,8 +102,6 @@ class IRCBot {
 		$this->trace_log = $config['trace_log'];
 		$this->notice_response = $config['notice_response'];
 		$this->command_signal = $config['command_signal'];
-
-		$this->main();
 	}
 
 	/**

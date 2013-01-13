@@ -68,10 +68,10 @@ class ExBot extends IRCBot {
 
 	/**
 	 * This is the workhorse function, grabs the data from the server and displays it. Evaluates services
-	 * and any modules the user may request through eval() - this approach is chosen to enable runtime reloading
-	 * of modules while keeping disk I/O at a minimum.
+	 * and any modules the user may request through eval() - this approach is chosen to enable runtime 
+	 * reloading of modules while keeping disk I/O at a minimum.
 	 */
-	protected function main()
+	public function main()
 	{
 		// Grab the data from this cycle of the IRC room, printing it for debugging purposes.
 		$data = fgets($this->socket, 256);
@@ -87,17 +87,18 @@ class ExBot extends IRCBot {
 		}
 
 		// Plays ping-pong with the server to stay connected.
-		if($this->ex[0] == 'PING')
+		if($this->ex(0) == 'PING')
 		{
-			$this->send_data('PONG', $this->ex[1]); 
+			$this->send_data('PONG', $this->ex(1)); 
 		}
 
-		$messenger = preg_replace('/:(.+)!(.+)/', "$1", $this->ex[0]);
-		$channel = $this->ex[2];
+		$messenger = preg_replace('/:(.+)!(.+)/', "$1", $this->ex(0));
+		$channel = $this->ex(2);
 		echo $channel ."\n";
 		
-		// Grab and strip the first real part of the message, i.e. the "command" part of the message 
-		$command = str_replace(array(chr(10), chr(13)), '', $this->ex[3]);
+		// Grab and strip the first real part of the message, i.e. the "command" part of the message.
+		// This is so that services can override it.
+		$command = str_replace(array(chr(10), chr(13)), '', $this->ex(3));
 		$command = str_replace(':', '', $command);
 
 		// We don't need the command signal if the user is PM'ing us directly
@@ -114,8 +115,9 @@ class ExBot extends IRCBot {
 		}
 				
 		// Check if this is a command intended for the bot, or a simple message to the crowd. Checks
-		// if the command begins with "!" and executes the appropriate, loaded module if that is the case.
-		// If there is no such module, or the module hasn't been (re)loaded, nothing will happen.
+		// if the command begins with the command signal and executes the appropriate, loaded module
+		// if that is the case. If there is no such module, or the module hasn't been (re)loaded, 
+		// nothing will happen.
 		if(preg_match('/^'.$this->command_signal.'(.+)$/', $command))
 		{
 			$command = preg_replace('/^'.$this->command_signal.'(.+)$/', "$1", $command);
@@ -137,7 +139,6 @@ class ExBot extends IRCBot {
 			$this->delay++;
 		}
 
-		$this->main();
 	}
 
 	/**
@@ -258,6 +259,15 @@ $service_data = unserialize(\''.serialize($new_value).'\');
 		return $this->base64_decode_recursive($service_data);
 	}
 
+	private function ex($index = NULL)
+	{
+		if($index!==NULL)
+		{
+			return (isset($this->ex[$index]) ? $this->ex[$index] : NULL);
+		}
+		return implode(' ', $this->ex);
+	}
+
 }
 
 // Start the bot
@@ -266,5 +276,10 @@ require_once(EXBOT_DIR . 'config.php');
 if( ! isset($config[ (isset($argv[1]) ? $argv[1] : $_GET['network']) ]) ) die('No such network in config, aborting' . PHP_EOL);
 
 $bot = new ExBot($config[ ( isset($argv[1]) ? $argv[1] : $_GET['network']) ]);
+
+while(true)
+{
+	$bot->main();
+}
 
 // EOF

@@ -1,0 +1,3 @@
+[submodule "lib/simplestorage"]
+	path = lib/simplestorage
+	url = https://github.com/mattcolf/php-simple-storage.git

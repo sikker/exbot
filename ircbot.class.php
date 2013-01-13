@@ -90,6 +90,7 @@ class IRCBot {
 	protected function __construct($config)
 	{
 		$this->socket = fsockopen($config['server'], $config['port']);
+		stream_Set_blocking($this->socket, 0);
 		$this->login($config['nick'], $config['name'], $config['domain'], $config['pass']);
 
 		// Sets global bot variables grabbed from the config array

@@ -5,9 +5,23 @@ exbot is a lightweight, modular IRC bot script written in PHP. It is based on th
 
 How to use it
 -------------------------
-The human whose name is written in this not-- Nah. Basically, you download the source, extract it and configure a network in config.php. Once you've done that, open a commandline window (be that the MSDOS Prompt or an xterm) and cd to the directory in question, and run the exbot.php script, with an argument consisting of the array key you gave the network you configured. If we assume you went with a 'freenode' connection, the way to start the bot would be:
+The human whose name is written in this not-- Nah. Basically, you download the source, extract it and configure a network in config.php -- a config.php.example is provided for you to follow. Once you've done that, open a commandline window (be that the MSDOS Prompt or an xterm) and cd to the directory in question, and run the exbot.php script, with an argument consisting of the array key you gave the network you configured. If we assume you went with a 'freenode' connection, the way to start the bot would be:
   php exbot.php freenode
-Please note that you need "php" to be in your PATH environment variable. On Linux, it usually already is if you've installed it, but on MS Windows you need to configure it manually by right-clicking Computer. More on that on Google :0)
+Please note that you need "php" to be in your PATH environment variable. On Linux, it usually already is if you've installed it, but on MS Windows you need to configure it manually by right-clicking Computer and following a complex maze of Redmondesque Userfriendliness. More on that on Google :0)
+
+How to command it
+-------------------------
+There are a bunch of built-in commands (called modules) you can use. These are:
+ - about (saves and states information about things)
+ - auth (by /msg'ing the bot with the password you specified in config, you can gain admin access)
+  - join (if you have auth, you can make the bot join a channel)
+  - nick (if you have auth, you can make the bot change its own name)
+  - part (if you have auth, you can make the bot leave a channel)
+  - reload (if you have auth, you can make the bot reload its modules and services)
+  - quit (if you have auth, you can make the bot leave the server)
+ - quote (saves and states funny quotes. Can give you random quotes if you don't specify anything.)
+ - roll (rolls dice. Do !roll help for more info.
+ - onyx-roll (rolls dice based on the systems designed by Onyx Path Publishing (formerly White Wolf).
 
 How to extend it
 -------------------------

@@ -1,9 +1,8 @@
 <?php
 
-if(isset($this->ex[4]))
+if($this->ex(4) !== null)
 {
-	$data = $this->module_data('about');
-	if(isset($this->ex[5]))
+	if($this->ex(5) !== null)
 	{
 		// Combine everything after the fourth segment into a string
 		$combined = $this->ex;
@@ -12,16 +11,15 @@ if(isset($this->ex[4]))
 			unset($combined[$i]);
 		}
 		
-		$data[ $this->ex[4] ] = implode(' ', $combined);
-		$this->module_data('about', $data);
+		$this->storage->put('module.about.' . $this->ex(4), implode(' ', $combined));
 	}
-	elseif(isset($data[ $this->ex[4] ]))
+	elseif($this->storage->get('module.about.' . $this->ex(4)) !== null)
 	{
-		$this->send_data('PRIVMSG', (preg_match('/^#/', $channel) ? $channel : $messenger) . ' :' . $this->ex[4] . ' is ' . $data[ $this->ex[4] ]);
+		$this->send_data('PRIVMSG', (preg_match('/^#/', $channel) ? $channel : $messenger) . ' :' . $this->ex(4) . ' is ' . $this->storage->get('module.about.' . $this->ex(4)));
 	}
 	else
 	{
-		$this->send_data('NOTICE', $messenger . ' :I don\'t know about ' . $this->ex[4]);
+		$this->send_data('NOTICE', $messenger . ' :I don\'t know about ' . $this->ex(4));
 	}
 }
 

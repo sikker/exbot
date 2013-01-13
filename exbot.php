@@ -3,13 +3,13 @@
 /**
  * Extended PHP IRC Bot
  *
- * Heavily extended by Per Sikker Hansen to work more generically, be modular and extensible
- * and able to reload it's modules without need for restarting the bot. It also has a service
- * API for allowing certain commands to be run on each tick. Below is kept  the original header
- * as per the redistribution instructions. Modified to run primarily on the commandline.
+ * Heavily extended to work more generically, be modular, extensible and able to reload its 
+ * modules without need for restarting the bot. It also has a service API for allowing 
+ * certain commands to be run on each tick. Below is kept  the original header as per the
+ * redistribution instructions. Modified to run primarily on the commandline.
  *
- * @author	Per Sikker Hansen <per@sikker-hansen.dk>
- * @copyright	2010, Per Sikker Hansen
+ * @author	Per Sikker Hansen <persikkerhansen@gmail.com>
+ * @copyright	2010-2013, Per Sikker Hansen
  * @version	1.1.0
  */
 
@@ -42,6 +42,8 @@ set_time_limit(0);
 ini_set('display_errors', 'on');
 
 require_once('ircbot.class.php');
+require_once('lib/simplestorage/simple_storage.class.php');
+require_once('lib/exbotstorage/exbotstorage.class.php');
 
 class ExBot extends IRCBot {
 
@@ -51,6 +53,9 @@ class ExBot extends IRCBot {
 	// Various services available to the bot. Run before any modules are run. 
 	// Stored as plain texct for eval() use
 	private $services = array();
+
+	// Storage engine
+	private $storage;
 
 	/**
 	 * Construct item, opens the server connection, logs the bot in
@@ -62,8 +67,11 @@ class ExBot extends IRCBot {
 		// Load services and modules for the first time
 		$this->reload_services();
 		$this->reload_modules();
+		
+		parent::__construct($config);
 
-		parent::__construct($config);		
+		// Create a simplestorage instance
+		$this->storage = new ExbotStorage($this->server);
 	}
 
 	/**
@@ -139,6 +147,8 @@ class ExBot extends IRCBot {
 			$this->delay++;
 		}
 
+		sleep(1);
+		$this->storage->flush();
 	}
 
 	/**
@@ -169,94 +179,6 @@ class ExBot extends IRCBot {
 				$this->services[basename($service, '.ser.php')] = preg_replace('/^\<\?php/', '', file_get_contents($service));
 			}
 		}
-	}
-
-	/**
-	 * Returns data related to the module in question. If $new_value is set, the data will be replaced.
-	 *
-	 * @param	string	the name of the module. The file will be data/$module.dat.php
-	 * @param	mixed	the data to be stored. Can be a string, array, object, or anything else
-	 * @return	mixed	the data the module has stored.
-	 */
-	protected function module_data($module, $new_value = NULL)
-	{
-		include(EXBOT_DIR . 'data/' . $module . '.dat.php');
-		if($new_value!==NULL)
-		{
-			$new_value = $this->base64_encode_recursive($new_value);
-			$service_data = $this->base64_encode_recursive($service_data);
-
-			file_put_contents(EXBOT_DIR . 'data/' . $module . '.dat.php',
-'<?php
-
-$module_data = unserialize(\''.serialize($new_value).'\');
-$service_data = unserialize(\''.serialize($service_data).'\');
-
-// EOF');
-			return $new_value;
-		}
-		return $this->base64_decode_recursive($module_data);
-	}
-
-	private function base64_encode_recursive($data)
-	{
-		if(is_array($data))
-		{
-			$new_data = array();
-			foreach($data as $key=>$value)
-			{
-				$new_data[ base64_encode($key) ] = $this->base64_encode_recursive($value);
-			}
-			return $new_data;
-		}
-		else
-		{
-			return base64_encode($data);
-		}
-	}
-
-	private function base64_decode_recursive($data)
-	{
-		if(is_array($data))
-		{
-			$new_data = array();
-			foreach($data as $key=>$value)
-			{
-				$new_data[ base64_decode($key) ] = $this->base64_decode_recursive($value);
-			}
-			return $new_data;
-		}
-		else
-		{
-			return base64_decode($data);
-		}
-	}
-
-	/**
-	 * Returns the data related to the service in question. If $new_value is set, the data will be replaced.
-	 * 
-	 * @param	string	the name of the service. The file will be data/$service.dat.php
-	 * @param	mixed	the data to be stored. Can be a string, array, object or anything else
-	 * @return	mixed	the data the service has stored
-	 */
-	protected function service_data($service, $new_value = NULL)
-	{
-		include(EXBOT_DIR . 'data/' . $module . '.dat.php');
-		if($new_value!==NULL)
-		{
-			$new_value = $this->base64_encode_recursive($new_value);
-			$module_data = $this->base64_encode_recursive($module_data);
-
-			file_put_contents(EXBOT_DIR . 'data/' . $module . '.dat.php',
-'<?php
-
-$module_data = unserialize(\''.serialize($service_data).'\');
-$service_data = unserialize(\''.serialize($new_value).'\');
-
-// EOF');
-			return $new_value;
-		}
-		return $this->base64_decode_recursive($service_data);
 	}
 
 	private function ex($index = NULL)

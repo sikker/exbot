@@ -1,11 +1,9 @@
 <?php
 
-if($this->ex(1)==='QUIT')
-{
-	if(isset($this->authenticated_users[$messenger]))
-	{
+if($this->ex(1)==='QUIT') {
+	if(isset($this->authenticatedUsers[$messenger])) {
 		trace('user deleted');
-		unset($this->authenticated_users[$messenger]);
+		unset($this->authenticatedUsers[$messenger]);
 	}
 }
 

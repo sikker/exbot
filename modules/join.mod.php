@@ -4,11 +4,11 @@ if(isset($this->ex[4]))
 {
 	if($this->authenticate($messenger))
 	{
-		$this->join_channel($this->ex[4]);
+		$this->joinChannel($this->ex[4]);
 	}
 	else
 	{
-		$this->send_data('NOTICE', $messenger . ' :You are not authorized to do that.');
+		$this->sendData('NOTICE', $messenger . ' :You are not authorized to do that.');
 	}
 }
 

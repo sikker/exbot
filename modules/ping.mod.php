@@ -1,5 +1,5 @@
 <?php
 
-$this->send_data('PRIVMSG', $messenger . ' :pong!');
+$this->sendData('PRIVMSG', $messenger . ' :pong!');
 
 // EOF

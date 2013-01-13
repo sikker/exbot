@@ -42,19 +42,19 @@ class IRCBot {
 
 	// Whether or not to trace and log runtime debug information. Set in $config
 	protected $trace;
-	protected $trace_log;
+	protected $traceLog;
 
 	// Whether or not to respond to user input with a NOTICE
-	protected $notice_response;
+	protected $noticeResponse;
 
 	// The root password for the bot for restricted actions (like reloading modules)
 	protected $password;
 
 	// When the root session as mentioned above would expire
-	protected $session_expire;
+	protected $sessionExpire;
 
 	// What signal the bot is going to respond to. Something like "!" or "."
-	protected $command_signal;
+	protected $commandSignal;
 
 
 	// -- // Content memory variables. These hold data needed for the bot to operate
@@ -82,13 +82,16 @@ class IRCBot {
 	// before the main() method attempts to join us to a channel.
 	protected $delay = 0;
 
+	// An array containing all users who are currently authenticated with the bot
+	// and can manipulate admin-only aspects of it.
+	protected $authenticatedUsers = array();
+
 	/**
 	 * Construct item, opens the server connection, logs the bot in
 	 *
 	 * @param	array
 	 */
-	protected function __construct($config)
-	{
+	protected function __construct($config) {
 		$this->socket = fsockopen($config['server'], $config['port']);
 		stream_Set_blocking($this->socket, 0);
 		$this->login($config['nick'], $config['name'], $config['domain'], $config['pass']);
@@ -98,11 +101,11 @@ class IRCBot {
 		$this->nick = $config['nick'];
 		$this->autojoin = $config['channel'];
 		$this->password = $config['auth_password'];
-		$this->session_expire = $config['session_expire'];
+		$this->sessionExpire = $config['session_expire'];
 		$this->trace = $config['trace'];
-		$this->trace_log = $config['trace_log'];
-		$this->notice_response = $config['notice_response'];
-		$this->command_signal = $config['command_signal'];
+		$this->traceLog = $config['trace_log'];
+		$this->noticeResponse = $config['notice_response'];
+		$this->commandSignal = $config['command_signal'];
 	}
 
 	/**
@@ -113,12 +116,10 @@ class IRCBot {
 	 * @param	string
 	 * @param	string
  	 */
-	protected function login($nick, $name, $domain, $password)
-	{
-		$this->send_data('USER', $nick.' '.$domain.' '.$nick.' :'.$name);
-		$this->send_data('NICK', $nick);
-		if($password!=='')
-		{
+	protected function login($nick, $name, $domain, $password) {
+		$this->sendData('USER', $nick.' '.$domain.' '.$nick.' :'.$name);
+		$this->sendData('NICK', $nick);
+		if($password!=='') {
 			$this->send_data('PRIVMSG', 'NickServ :identify ' . $password);
 		}
 	}
@@ -126,18 +127,14 @@ class IRCBot {
 	/**
 	 * Displays stuff to the commandline and sends data to the server.
 	 */
-	protected function send_data($command, $message = NULL)
-	{
+	protected function sendData($command, $message = NULL) {
 		// Some users prefer their bots to remain silent, rather than sending notices
-		if($command==='NOTICE' && $this->notice_response===FALSE) return;
+		if($command==='NOTICE' && $this->noticeResponse===FALSE) return;
 
-		if($message == NULL)
-		{
+		if($message == NULL) {
 			fputs($this->socket, $command."\r\n");
 			echo "***".$command."***\r\n";
-		}
-		else
-		{
+		} else {
 			fputs($this->socket, $command.' '.$message."\r\n");
 			echo "***".$command." ".$message."***\r\n";
 		}
@@ -146,20 +143,14 @@ class IRCBot {
 	/**
 	 * Joins a channel, used in the join module. Recursive if an array is provided.
 	 */
-	protected function join_channel($channel)
-	{
-		if(is_array($channel))
-		{
-			foreach($channel as $chan)
-			{
-				$this->join_channel($chan);
+	protected function joinChannel($channel) {
+		if(is_array($channel)) {
+			foreach($channel as $chan) {
+				$this->joinChannel($chan);
 			}
-
-		}
-		else
-		{
+		} else {
 			if(isset($this->channels[$channel])) return;
-			$this->send_data('JOIN', $channel);
+			$this->sendData('JOIN', $channel);
 			$this->channels[$channel] = $channel;
 		}
 	}
@@ -167,45 +158,38 @@ class IRCBot {
 	/**
 	 * Parts with a channel, used in the part module. Recursive if an array is provided.
 	 */
-	protected function part_channel($channel)
-	{
-		if(is_array($channel))
-		{
-			foreach($channel as $chan)
-			{
-				$this->part_channel($chan);
+	protected function partChannel($channel) {
+		if(is_array($channel)) {
+			foreach($channel as $chan) {
+				$this->partChannel($chan);
 			}
 		}
 		if( ! isset($this->channels[$channel])) return;
-		$this->send_data('PART', $channel);
+		$this->sendData('PART', $channel);
 		unset($this->channels[$channel]);
 	}
 
 	/**
 	 * Start sessions with a superuser or check integrity of a user
 	 */
-	protected function authenticate($nick, $password = FALSE)
-	{
+	protected function authenticate($nick, $password = false) {
 		// if the user is authorizing, save his session
-		if($password!==FALSE && $password===$this->password)
-		{
-			$this->authenticated_users[$nick] = time();
+		if($password!==false && $password===$this->password) {
+			$this->authenticatedUsers[$nick] = time();
 		} 
 
 		// if a module is checking whether the user is authenticated or not, check the session
-		if(isset($this->authenticated_users[$nick]) && $this->authenticated_users[$nick]>(time()-$this->session_expire))
-		{
-			return TRUE;
+		if(isset($this->authenticatedUsers[$nick]) && $this->authenticatedUsers[$nick]>(time()-$this->session_expire)) {
+			return true;
 		}
-		return FALSE;
+		return false;
 	}
 
 	/**
 	 * Trace data. If trace is true, it will be outputted to the commandline. If trace_log is true,
 	 * it will be saved in a logfile. Neither are mutually exclusive.
 	 */
-	protected function trace($message)
-	{
+	protected function trace($message) {
 		if($this->trace) echo $message . "\n";
 		if($this->trace_log) file_put_contents('trace/' . $this->server . '.log', $message);
 	}

@@ -15,31 +15,31 @@ if($this->ex(4) !== null && $this->ex(4)==='add') {
 		$id = $data['last_id'] +1;
 		$data['last_id'] = $id;
 		$data['quotes'][$id] = array('id'=>$id, 'quote'=>implode(' ', $combined), 'nick'=>$messenger);
-		$this->send_data('NOTICE', $messenger . ' :Quote added with id #' . $id . '.');
+		$this->sendData('NOTICE', $messenger . ' :Quote added with id #' . $id . '.');
 		$this->storage->put('module.quote.' . $channel, $data);
 	} else {
-		$this->send_data('NOTICE', $messenger . ' :You need to provide the actual quote.');
+		$this->sendData('NOTICE', $messenger . ' :You need to provide the actual quote.');
 	}
 } elseif($this->ex(4) !== null && is_numeric($this->ex(4))) {
 	if(isset($data['quotes'][$this->ex(4)])) {
 		$message = ' :Quote: ' . $data['quotes'][$this->ex(4)]['quote'] . ' (#'.$this->ex(4).' by '.$data['quotes'][$this->ex(4)]['nick'].').';
 		if(preg_match('/^#/', $channel)) {
-			$this->send_data('PRIVMSG', $channel . $message);
+			$this->sendData('PRIVMSG', $channel . $message);
 		} else {
-			$this->send_data('NOTICE', $messenger . $message);
+			$this->sendData('NOTICE', $messenger . $message);
 		}
 	} else {
-		$this->send_data('NOTICE', $messenger . ' :No such quote.');
+		$this->sendData('NOTICE', $messenger . ' :No such quote.');
 	}
 } elseif($this->ex(4) !== null && $this->ex(4) === 'help') {
 	if(preg_match('/^#/', $channel)) {
-		$this->send_data('PRIVMSG', $channel . ' :Random quote: ' . $this->command_signal . 'quote');
-		$this->send_data('PRIVMSG', $channel . ' :Specific quote: ' . $this->command_signal . 'quote $num');
-		$this->send_data('PRIVMSG', $channel . ' :New quote: ' . $this->command_signal . 'quote add $text');
+		$this->sendData('PRIVMSG', $channel . ' :Random quote: ' . $this->command_signal . 'quote');
+		$this->sendData('PRIVMSG', $channel . ' :Specific quote: ' . $this->command_signal . 'quote $num');
+		$this->sendData('PRIVMSG', $channel . ' :New quote: ' . $this->command_signal . 'quote add $text');
 	} else {
-		$this->send_data('NOTICE', $messenger . ' :Random quote: ' . $this->command_signal . 'quote');
-		$this->send_data('NOTICE', $messenger . ' :Specific quote: ' . $this->command_signal . 'quote $num');
-		$this->send_data('NOTICE', $messenger . ' :New quote: ' . $this->command_signal . 'quote add $text');
+		$this->sendData('NOTICE', $messenger . ' :Random quote: ' . $this->command_signal . 'quote');
+		$this->sendData('NOTICE', $messenger . ' :Specific quote: ' . $this->command_signal . 'quote $num');
+		$this->sendData('NOTICE', $messenger . ' :New quote: ' . $this->command_signal . 'quote add $text');
 	}
 } else {
 	if($data === null || empty($data['quotes'])) {
@@ -50,9 +50,9 @@ if($this->ex(4) !== null && $this->ex(4)==='add') {
 	}
 
 	if(preg_match('/^#/', $channel)) {
-		$this->send_data('PRIVMSG', $channel . $message);
+		$this->sendData('PRIVMSG', $channel . $message);
 	} else {
-		$this->send_data('NOTICE', $messenger . $message);
+		$this->sendData('NOTICE', $messenger . $message);
 	}
 }
 

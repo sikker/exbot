@@ -62,11 +62,10 @@ class ExBot extends IRCBot {
 	 *
 	 * @param	array
 	 */
-	public function __construct($config)
-	{
+	public function __construct($config) {
 		// Load services and modules for the first time
-		$this->reload_services();
-		$this->reload_modules();
+		$this->reloadServices();
+		$this->reloadModules();
 		
 		parent::__construct($config);
 
@@ -79,8 +78,7 @@ class ExBot extends IRCBot {
 	 * and any modules the user may request through eval() - this approach is chosen to enable runtime 
 	 * reloading of modules while keeping disk I/O at a minimum.
 	 */
-	public function main()
-	{
+	public function main() {
 		// Grab the data from this cycle of the IRC room, printing it for debugging purposes.
 		$data = fgets($this->socket, 256);
 		echo $data;
@@ -88,16 +86,14 @@ class ExBot extends IRCBot {
 
 		// Prepare the exploded segments of the message packet
 		$this->ex = explode(' ', $data);
-		for($i=0;$i<count($this->ex);$i++)
-		{
+		for($i=0;$i<count($this->ex);$i++) {
 			$this->ex[$i] = trim($this->ex[$i]);
 			$this->ex[$i] = trim($this->ex[$i]);
 		}
 
 		// Plays ping-pong with the server to stay connected.
-		if($this->ex(0) == 'PING')
-		{
-			$this->send_data('PONG', $this->ex(1)); 
+		if($this->ex(0) == 'PING') {
+			$this->sendData('PONG', $this->ex(1)); 
 		}
 
 		$messenger = preg_replace('/:(.+)!(.+)/', "$1", $this->ex(0));
@@ -110,15 +106,13 @@ class ExBot extends IRCBot {
 		$command = str_replace(':', '', $command);
 
 		// We don't need the command signal if the user is PM'ing us directly
-		if($channel===$this->nick)
-		{
-			$command = $this->command_signal . $command;
+		if($channel===$this->nick) {
+			$command = $this->commandSignal . $command;
 		}
 
 		// Before continuing to executing any commands, we'll first run all our services. This way
 		// a service can override a command or similar (creating aliases, for example)
-		foreach($this->services as $service)
-		{
+		foreach($this->services as $service) {
 			eval($service);
 		}
 				
@@ -126,11 +120,9 @@ class ExBot extends IRCBot {
 		// if the command begins with the command signal and executes the appropriate, loaded module
 		// if that is the case. If there is no such module, or the module hasn't been (re)loaded, 
 		// nothing will happen.
-		if(preg_match('/^'.$this->command_signal.'(.+)$/', $command))
-		{
-			$command = preg_replace('/^'.$this->command_signal.'(.+)$/', "$1", $command);
-			if(isset($this->modules[$command]))
-			{
+		if(preg_match('/^'.$this->commandSignal.'(.+)$/', $command)) {
+			$command = preg_replace('/^'.$this->commandSignal.'(.+)$/', "$1", $command);
+			if(isset($this->modules[$command])) {
 				eval($this->modules[$command]);
 			}
 		}
@@ -138,12 +130,9 @@ class ExBot extends IRCBot {
 		// This delay is in place because otherwise the script won't wait until the bot is fully
 		// connected, thus attempting to join a channel on no network, meaning the default channel
 		// will never be joined.
-		if($this->delay==10)
-		{
-			$this->join_channel($this->autojoin);
-		}
-		else
-		{
+		if($this->delay==10) {
+			$this->joinChannel($this->autojoin);
+		} else {
 			$this->delay++;
 		}
 
@@ -155,12 +144,9 @@ class ExBot extends IRCBot {
 	 * Reloads all modules into the bot's memory for eval() use. Removes any  "<?php" tags 
 	 * there may be in the file.
 	 */
-	private function reload_modules()
-	{
-		if($modules = glob(EXBOT_DIR . 'modules/*.mod.php'))
-		{
-			foreach($modules as $module)
-			{
+	private function reloadModules() {
+		if($modules = glob(EXBOT_DIR . 'modules/*.mod.php')) {
+			foreach($modules as $module) {
 				$this->modules[basename($module, '.mod.php')] = preg_replace('/^\<\?php/', '', file_get_contents($module));
 			}
 		}
@@ -170,21 +156,16 @@ class ExBot extends IRCBot {
 	 * Reloads all services into the bot's memory for eval() use. removes any "<?php" tags
 	 * there may be in the file.
 	 */
-	private function reload_services()
-	{
-		if($services = glob(EXBOT_DIR . 'services/*.ser.php'))
-		{
-			foreach($services as $service)
-			{
+	private function reloadServices() {
+		if($services = glob(EXBOT_DIR . 'services/*.ser.php')) {
+			foreach($services as $service) {
 				$this->services[basename($service, '.ser.php')] = preg_replace('/^\<\?php/', '', file_get_contents($service));
 			}
 		}
 	}
 
-	private function ex($index = NULL)
-	{
-		if($index!==NULL)
-		{
+	private function ex($index = NULL) {
+		if($index!==NULL) {
 			return (isset($this->ex[$index]) ? $this->ex[$index] : NULL);
 		}
 		return implode(' ', $this->ex);
@@ -199,8 +180,7 @@ if( ! isset($config[ (isset($argv[1]) ? $argv[1] : $_GET['network']) ]) ) die('N
 
 $bot = new ExBot($config[ ( isset($argv[1]) ? $argv[1] : $_GET['network']) ]);
 
-while(true)
-{
+while(true) {
 	$bot->main();
 }
 

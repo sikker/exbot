@@ -120,7 +120,7 @@ class IRCBot {
 		$this->sendData('USER', $nick.' '.$domain.' '.$nick.' :'.$name);
 		$this->sendData('NICK', $nick);
 		if($password!=='') {
-			$this->send_data('PRIVMSG', 'NickServ :identify ' . $password);
+			$this->sendData('PRIVMSG', 'NickServ :identify ' . $password);
 		}
 	}
 
@@ -179,7 +179,7 @@ class IRCBot {
 		} 
 
 		// if a module is checking whether the user is authenticated or not, check the session
-		if(isset($this->authenticatedUsers[$nick]) && $this->authenticatedUsers[$nick]>(time()-$this->session_expire)) {
+		if(isset($this->authenticatedUsers[$nick]) && $this->authenticatedUsers[$nick]>(time()-$this->sessionExpire)) {
 			return true;
 		}
 		return false;
@@ -190,8 +190,9 @@ class IRCBot {
 	 * it will be saved in a logfile. Neither are mutually exclusive.
 	 */
 	protected function trace($message) {
-		if($this->trace) echo $message . "\n";
-		if($this->trace_log) file_put_contents('trace/' . $this->server . '.log', $message);
+		if($message === false || $message === '' || $message === null) return;
+		if($this->trace) echo $message;
+		if($this->traceLog) file_put_contents('trace/' . $this->server . '.log', $message);
 	}
 
 }

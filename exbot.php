@@ -81,7 +81,7 @@ class ExBot extends IRCBot {
 	public function main() {
 		// Grab the data from this cycle of the IRC room, printing it for debugging purposes.
 		$data = fgets($this->socket, 256);
-		echo $data;
+		$this->trace($data);
 		flush();
 
 		// Prepare the exploded segments of the message packet
@@ -98,7 +98,6 @@ class ExBot extends IRCBot {
 
 		$messenger = preg_replace('/:(.+)!(.+)/', "$1", $this->ex(0));
 		$channel = $this->ex(2);
-		echo $channel ."\n";
 		
 		// Grab and strip the first real part of the message, i.e. the "command" part of the message.
 		// This is so that services can override it.

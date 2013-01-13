@@ -174,6 +174,11 @@ class ExBot extends IRCBot {
 
 // Start the bot
 if( ! isset($argv[1]) && ! isset($_GET['network'])) die('No network parameter provided, aborting' . PHP_EOL);
+
+if( ! file_exists(EXBOT_DIR) . 'config.php') {
+	die('Rename config.php.example to config.php to get started.' . PHP_EOL);
+}
+
 require_once(EXBOT_DIR . 'config.php');
 if( ! isset($config[ (isset($argv[1]) ? $argv[1] : $_GET['network']) ]) ) die('No such network in config, aborting' . PHP_EOL);
 

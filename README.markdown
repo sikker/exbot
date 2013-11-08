@@ -20,7 +20,7 @@ There are a bunch of built-in commands (called modules) you can use. These are:
   - reload (if you have auth, you can make the bot reload its modules and services)
   - quit (if you have auth, you can make the bot leave the server)
  - quote (saves and states funny quotes. Can give you random quotes if you don't specify anything.)
- - roll (rolls dice. Do !roll help for more info.
+ - roll (rolls dice. Do !roll help for more info.)
  - onyx-roll (rolls dice based on the systems designed by Onyx Path Publishing (formerly White Wolf).
 
 How to extend it

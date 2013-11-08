@@ -9,7 +9,7 @@ $config = array(
 		'name'   => 'exbot',
 		'nick'   => 'exbot',
 		'pass'   => '',
-		'domain' => 'sikkerhansen.wordpress.com',
+		'domain' => 'psikker.me',
 		'command_signal' => '!',
 		'trace' => TRUE,
 		'trace_log' => TRUE,
@@ -17,19 +17,4 @@ $config = array(
 		'session_expire' => 60*60*20,
 		'notice_response' => TRUE,
 	),
-	'sorcery' => array(
-		'server' => 'irc.sorcery.net',
-		'port'   => 6667,
-		'channel' => '#exbot',
-		'name'   => 'Exbot',
-		'nick'   => 'Seneschal',
-		'pass'   => '',
-		'domain' => 'sikkerhansen.wordpress.com',
-		'command_signal' => '!',
-		'trace' => TRUE,
-		'trace_log' => TRUE,
-		'auth_password' => 'vicissitude',
-		'session_expire' => 60*60*20,
-		'notice_response' => TRUE,
-	)
 );

@@ -135,7 +135,7 @@ class ExBot extends IRCBot {
 			$this->delay++;
 		}
 
-		sleep(1);
+		if(empty($data)) sleep(1);
 		$this->storage->flush();
 	}
 

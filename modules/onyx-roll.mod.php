@@ -12,7 +12,7 @@ if($this->ex(4) === 'help') {
 	$this->sendData('PRIVMSG', $channel . ' :NWoD example: ' . $this->commandSignal . 'onyx-roll pool(5)');
 	$this->sendData('PRIVMSG', $channel . ' :CWoD example: ' . $this->commandSignal . 'onyx-roll pool(5) target(6) ones-subtract no-explode');
 	$this->sendData('PRIVMSG', $channel . ' :Result syntax: $successes [ $resultNumbers ($explodedResultNumbers) ]');
-	$this->sendData('PRIVMSG', $channel . ' :-- Roll ptions: --');
+	$this->sendData('PRIVMSG', $channel . ' :-- Roll options: --');
 	$this->sendData('PRIVMSG', $channel . ' :pool($num): Sets the dice pool to $num. Default 5.');
 	$this->sendData('PRIVMSG', $channel . ' :target($num): Sets the target number to $num. Default 8.');
 	$this->sendData('PRIVMSG', $channel . ' :explode($num): Sets the exploding dice threshold to $num. Default 10.');
